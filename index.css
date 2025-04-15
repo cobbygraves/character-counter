@@ -131,6 +131,14 @@ input[type='checkbox'] {
   justify-content: center;
 } */
 
+#limit-warning {
+  margin-top: 10px;
+  display: none;
+  column-gap: 5px;
+  align-items: center;
+  color: red;
+}
+
 .card-img {
   position: absolute;
   height: 150px;
@@ -237,6 +245,17 @@ input[type='checkbox'] {
     display: flex;
     column-gap: 3rem;
     align-items: center;
+  }
+
+  #character-limit {
+    display: none;
+    width: 40px;
+    border-radius: 5px;
+    padding: 2px;
+    background-color: inherit;
+    border: 1px solid gray;
+    color: white;
+    text-align: center;
   }
 
   .character-container {

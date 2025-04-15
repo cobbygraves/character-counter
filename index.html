@@ -27,18 +27,31 @@
       rows="7"
       placeholder="Start typing here...(or paste your text)"
     ></textarea>
+    <div id="limit-warning">
+      <img src="./assets/images/info-circle.svg" alt="warning" />
+      <p>
+        Limit reached! Your text exceeds
+        <sapn id="limit-value">0</sapn> characters.
+      </p>
+    </div>
     <div class="character-container">
       <div class="character">
         <div class="character-btn">
-          <input type="checkbox" />
+          <input type="checkbox" id="activate-spaces" />
           <p>Exclude Spaces</p>
         </div>
         <div class="character-btn">
-          <input type="checkbox" />
+          <input type="checkbox" id="activate-limit" />
           <p>Set Character Limit</p>
+          <input type="text" id="character-limit" />
         </div>
+        <!-- <div class="character-btn">
+         
+        </div> -->
       </div>
-      <p class="reading-time">Approx. reading time &lt;1 minutes</p>
+      <p class="reading-time">
+        Approx. reading time &lt; <span class="reading-value">1</span> minutes
+      </p>
     </div>
     <div class="cards-container">
       <div class="card" style="background-color: #d3a0fa">
@@ -46,17 +59,17 @@
           src="./assets/images/pattern-character-count.svg"
           class="card-img"
         />
-        <h2>278</h2>
+        <h2 id="character-count">0</h2>
         <div>Total Characters</div>
       </div>
       <div class="card" style="background-color: #ff9f00">
         <img src="./assets/images/word-count.png" class="card-img" />
-        <h2>39</h2>
+        <h2 id="word-count">0</h2>
         <div>Word Count</div>
       </div>
       <div class="card" style="background-color: #fe8159">
         <img src="./assets/images/sentence-code.png" class="card-img" />
-        <h2 class="count-value">04</h2>
+        <h2 class="count-value" id="sentence-count">0</h2>
         <div class="count-sentence">Sentence Count</div>
       </div>
     </div>
