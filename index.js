@@ -12,7 +12,12 @@ const readingValue = document.querySelector('.reading-value')
 const densityContainer = document.querySelector('.density-container')
 const characterContainer = document.querySelector('.character-container')
 const emptyCharacter = document.querySelector('#empty-character')
+const showMore = document.querySelector('.show-more')
+const seeMore = document.querySelector('.show-more span')
+const seeMoreImg = document.querySelector('.show-more img')
+console.log(seeMoreImg)
 
+let isShowMore = false
 let lastCharacter = ''
 let progressData = []
 let ignoreSpace = true
@@ -21,6 +26,7 @@ let tracker = 0
 let isDark = true
 const blackListedKeys = ['Backspace', 'Shift']
 
+//deleting character on keyboard
 const onBackspaceInfo = (character) => {
   let modifiedData = progressData.map((item) => {
     if (item.character === character) {
@@ -31,6 +37,7 @@ const onBackspaceInfo = (character) => {
   progressData = modifiedData
 }
 
+//rendering character on keyboard
 const progressInfo = (character) => {
   if (character === ' ') {
     return
@@ -52,15 +59,17 @@ const progressInfo = (character) => {
   }
 }
 
+//rendering progress bars
 const renderProgressData = (dataArray) => {
   characterContainer.innerHTML = ''
+  dataArray.sort((a, b) => b.value - a.value)
   for (let i = 0; i < dataArray.length; i++) {
     if (dataArray[i].value > 0) {
       const characterProgress = document.createElement('div')
       characterProgress.classList.add('density-progress')
-      characterProgress.innerHTML = `<div class="progress-character">${
-        dataArray[i].character
-      }</div>
+      characterProgress.innerHTML = `<div class="progress-character">${dataArray[
+        i
+      ].character.toUpperCase()}</div>
             <div class="progress-inactive">
               <div class="progress-active" style="width: ${(
                 (dataArray[i].value / textContent.length) *
@@ -160,13 +169,13 @@ textEntry.addEventListener('keydown', (e) => {
     textContent = textContent.slice(0, textContent.length - 1)
     tracker = tracker - 1 < 0 ? 0 : tracker - 1
     onBackspaceInfo(lastCharacter)
-    console.log(progressData)
+    //  console.log(progressData)
   } else {
     lastCharacter = e.key
     tracker = tracker + 1
     textContent = textContent + e.key
     progressInfo(e.key)
-    console.log(progressData)
+    // console.log(progressData)
   }
 
   if (textContent.length > 0) {
@@ -197,7 +206,15 @@ textEntry.addEventListener('keydown', (e) => {
   wordCountValue.innerText = calculateWordCount(textContent)
     .toString()
     .padStart(2, 0)
-  renderProgressData(progressData)
+  if (progressData.length <= 5) {
+    const slicedData = progressData.slice(0, progressData.length)
+    renderProgressData(slicedData)
+    showMore.style.display = 'none'
+  } else if (progressData.length > 5) {
+    const slicedData = progressData.slice(0, 5)
+    renderProgressData(slicedData)
+    showMore.style.display = 'block'
+  }
 })
 
 //handle limit error message
@@ -216,4 +233,10 @@ spaces.addEventListener('click', () => {
   } else {
     ignoreSpace = false
   }
+})
+
+//show more handler
+showMore.addEventListener('click', () => {
+  seeMore.innerHTML = 'See less'
+  seeMoreImg.className = 'rotate'
 })
