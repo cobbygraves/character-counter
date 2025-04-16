@@ -170,13 +170,19 @@ input[type='checkbox'] {
   font-size: 1.5rem;
   font-weight: 600;
   margin-top: 20px;
+  width: 100%;
 }
+
+/* .character-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+} */
 
 .density-progress {
   display: grid;
   grid-template-columns: 2% 63% auto;
   column-gap: 5%;
-
   margin-bottom: 17px;
 }
 
@@ -203,7 +209,7 @@ input[type='checkbox'] {
 }
 
 .show-more {
-  display: flex;
+  display: none;
   column-gap: 20px;
   align-items: center;
 }
@@ -258,10 +264,19 @@ input[type='checkbox'] {
     text-align: center;
   }
 
-  .character-container {
+  .checkbox-character-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .character-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .cards-container {
