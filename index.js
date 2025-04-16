@@ -17,7 +17,7 @@ const seeMore = document.querySelector('.show-more span')
 const seeMoreImg = document.querySelector('.show-more img')
 console.log(seeMoreImg)
 
-let isShowMore = false
+let isShowless = false
 let lastCharacter = ''
 let progressData = []
 let ignoreSpace = true
@@ -88,7 +88,7 @@ const renderProgressData = (dataArray) => {
 // Switching between light and dark mode
 themeSwitch.addEventListener('click', () => {
   if (isDark) {
-    isDark = false
+    isDark = !isDark
     characterLimit.style.color = 'black'
     themeSwitch.style.backgroundColor = '#f2f2f7'
     document.body.style.backgroundImage =
@@ -107,7 +107,7 @@ themeSwitch.addEventListener('click', () => {
       .querySelector('#theme-icon')
       .setAttribute('src', './assets/images/light-moon.png')
   } else {
-    isDark = true
+    isDark = !isDark
     characterLimit.style.color = 'white'
     themeSwitch.style.backgroundColor = '#2a2b37'
     document.querySelector('#text-entry').style.color = '#f2f2f7'
@@ -237,6 +237,15 @@ spaces.addEventListener('click', () => {
 
 //show more handler
 showMore.addEventListener('click', () => {
-  seeMore.innerHTML = 'See less'
-  seeMoreImg.className = 'rotate'
+  if (seeMore.innerHTML === 'See less') {
+    seeMore.innerHTML = 'See More'
+    seeMoreImg.className = 'rotate'
+    seeMoreImg.classList.remove('rotate')
+    renderProgressData(progressData)
+  } else {
+    seeMore.innerHTML = 'See less'
+    seeMoreImg.className = 'rotate'
+    const slicedData = progressData.slice(0, 5)
+    renderProgressData(slicedData)
+  }
 })
