@@ -98,7 +98,7 @@ const renderProgressData = (dataArray) => {
 
 // Switching between light and dark mode
 themeSwitch.addEventListener('click', () => {
-  if (isDark) {
+  if (!isDark) {
     isDark = !isDark
     characterLimit.style.color = 'black'
     themeSwitch.style.backgroundColor = '#f2f2f7'
