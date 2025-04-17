@@ -15,16 +15,27 @@ const emptyCharacter = document.querySelector('#empty-character')
 const showMore = document.querySelector('.show-more')
 const seeMore = document.querySelector('.show-more span')
 const seeMoreImg = document.querySelector('.show-more img')
-console.log(seeMoreImg)
 
-let isShowless = false
 let lastCharacter = ''
 let progressData = []
-let ignoreSpace = true
+let ignoreSpace = false
 let textContent = ''
 let tracker = 0
 let isDark = true
-const blackListedKeys = ['Backspace', 'Shift']
+const blackListedKeys = [
+  'Backspace',
+  'Shift',
+  'CONTROL',
+  'ARROWLEFT',
+  'ARROWRIGHT',
+  'PAGEDOWN',
+  'ALT',
+  'PAGEUP',
+  'ARROWDOWN',
+  'ARROWUP',
+  'CAPSLOCK',
+  'CONTROL'
+]
 
 //deleting character on keyboard
 const onBackspaceInfo = (character) => {
@@ -172,7 +183,11 @@ textEntry.addEventListener('keydown', (e) => {
     //  console.log(progressData)
   } else {
     lastCharacter = e.key
-    tracker = tracker + 1
+    if (ignoreSpace && e.key === ' ') {
+      tracker = tracker
+    } else {
+      tracker = tracker + 1
+    }
     textContent = textContent + e.key
     progressInfo(e.key)
     // console.log(progressData)
@@ -210,7 +225,9 @@ textEntry.addEventListener('keydown', (e) => {
     const slicedData = progressData.slice(0, progressData.length)
     renderProgressData(slicedData)
     showMore.style.display = 'none'
-  } else if (progressData.length > 5) {
+  }
+
+  if (progressData.length > 5) {
     const slicedData = progressData.slice(0, 5)
     renderProgressData(slicedData)
     showMore.style.display = 'block'
@@ -241,11 +258,12 @@ showMore.addEventListener('click', () => {
     seeMore.innerHTML = 'See More'
     seeMoreImg.className = 'rotate'
     seeMoreImg.classList.remove('rotate')
-    renderProgressData(progressData)
+    const slicedData = progressData.slice(0, 5)
+    renderProgressData(slicedData)
   } else {
     seeMore.innerHTML = 'See less'
     seeMoreImg.className = 'rotate'
-    const slicedData = progressData.slice(0, 5)
+    const slicedData = progressData.slice(0)
     renderProgressData(slicedData)
   }
 })
