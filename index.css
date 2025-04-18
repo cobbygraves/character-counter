@@ -111,6 +111,17 @@ input[type='checkbox'] {
   color: black;
 }
 
+#character-limit {
+  display: none;
+  width: 40px;
+  border-radius: 5px;
+  padding: 2px;
+  background-color: inherit;
+  border: 1px solid gray;
+  /* color: white; */
+  text-align: center;
+}
+
 .card {
   position: relative;
   border-radius: 10px;
@@ -253,7 +264,7 @@ input[type='checkbox'] {
     column-gap: 3rem;
     align-items: center;
   }
-
+  /* 
   #character-limit {
     display: none;
     width: 40px;
@@ -261,9 +272,9 @@ input[type='checkbox'] {
     padding: 2px;
     background-color: inherit;
     border: 1px solid gray;
-    /* color: white; */
+
     text-align: center;
-  }
+  } */
 
   .checkbox-character-container {
     display: flex;
