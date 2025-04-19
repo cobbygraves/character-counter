@@ -156,9 +156,9 @@ textEntry.addEventListener('input', (e) => {
   //  console.log(textContent)
 
   textContent = e.target.value
-  if (ignoreSpace) {
-    textContent = textContent.replace(/\s/g, '')
-  }
+  // if (ignoreSpace) {
+  //   textContent = textContent.replace(/\s/g, '')
+  // }
   //  console.log(textContent)
   if (textContent.length > 0) {
     emptyCharacter.style.display = 'none'
@@ -181,13 +181,17 @@ textEntry.addEventListener('input', (e) => {
     textEntry.style.boxShadow = '0px 0px 5px 1px #d3a0fa'
     limitWarning.style.display = 'none'
   }
-  characterCountValue.innerText = textContent.length.toString().padStart(2, 0)
+
   sentenceCountValue.innerText = calculateSentenceCount(textContent)
     .toString()
     .padStart(2, 0)
   wordCountValue.innerText = calculateWordCount(textContent)
     .toString()
     .padStart(2, 0)
+  if (ignoreSpace) {
+    textContent = textContent.replace(/\s/g, '')
+  }
+  characterCountValue.innerText = textContent.length.toString().padStart(2, 0)
   assignCharacterArray(textContent)
   if (progressData.length <= 5) {
     const slicedData = progressData.slice(0, progressData.length)
