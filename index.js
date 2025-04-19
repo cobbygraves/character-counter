@@ -239,3 +239,17 @@ showMore.addEventListener('click', () => {
     renderProgressData(slicedData)
   }
 })
+
+//handle character limit event listener
+characterLimit.addEventListener('input', (e) => {
+  if (limit.checked && textContent.length < parseInt(e.target.value)) {
+    textEntry.style.border = '1px solid #d3a0fa'
+    textEntry.style.boxShadow = '0px 0px 5px 1px #d3a0fa'
+    limitWarning.style.display = 'none'
+  } else {
+    textEntry.style.border = '1px solid red'
+    textEntry.style.boxShadow = '0px 0px 5px 1px red'
+    limitWarning.style.display = 'flex'
+    limitValue.innerHTML = characterLimit.value
+  }
+})
