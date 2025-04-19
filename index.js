@@ -16,56 +16,29 @@ const showMore = document.querySelector('.show-more')
 const seeMore = document.querySelector('.show-more span')
 const seeMoreImg = document.querySelector('.show-more img')
 
-let lastCharacter = ''
 let progressData = []
 let ignoreSpace = false
 let textContent = ''
-let tracker = 0
 let isDark = true
-const blackListedKeys = [
-  'Backspace',
-  'Shift',
-  'CONTROL',
-  'ARROWLEFT',
-  'ARROWRIGHT',
-  'PAGEDOWN',
-  'ALT',
-  'PAGEUP',
-  'ARROWDOWN',
-  'ARROWUP',
-  'CAPSLOCK',
-  'CONTROL'
-]
 
-//deleting character on keyboard
-const onBackspaceInfo = (character) => {
-  let modifiedData = progressData.map((item) => {
-    if (item.character === character) {
-      item.value -= 1
-    }
-    return item
-  })
-  progressData = modifiedData
-}
-
-//rendering character on keyboard
-const progressInfo = (character) => {
-  if (character === ' ') {
-    return
-  }
-  if (progressData.length === 0) {
-    progressData.push({ character, value: 1 })
-  } else {
-    if (progressData.some((obj) => obj.character === character)) {
-      let modifiedData = progressData.map((item) => {
-        if (item.character === character) {
-          item.value += 1
-        }
-        return item
-      })
-      progressData = modifiedData
+//assign character array
+const assignCharacterArray = (sentence) => {
+  progressData = []
+  for (let i = 0; i < sentence.length; i++) {
+    if (progressData.length === 0) {
+      progressData.push({ character: sentence[i], value: 1 })
     } else {
-      progressData.push({ character, value: 1 })
+      if (progressData.some((obj) => obj.character === sentence[i])) {
+        let modifiedData = progressData.map((item) => {
+          if (item.character === sentence[i]) {
+            item.value += 1
+          }
+          return item
+        })
+        progressData = modifiedData
+      } else {
+        progressData.push({ character: sentence[i], value: 1 })
+      }
     }
   }
 }
@@ -75,6 +48,9 @@ const renderProgressData = (dataArray) => {
   characterContainer.innerHTML = ''
   dataArray.sort((a, b) => b.value - a.value)
   for (let i = 0; i < dataArray.length; i++) {
+    if (dataArray[i].character === ' ') {
+      continue
+    }
     if (dataArray[i].value > 0) {
       const characterProgress = document.createElement('div')
       characterProgress.classList.add('density-progress')
@@ -174,25 +150,15 @@ const calculateSentenceCount = (sentence) => {
 }
 
 //handle textarea change event
-textEntry.addEventListener('keydown', (e) => {
-  if (blackListedKeys.includes(e.key)) {
-    lastCharacter = textContent[textContent.length - 1]
-    textContent = textContent.slice(0, textContent.length - 1)
-    tracker = tracker - 1 < 0 ? 0 : tracker - 1
-    onBackspaceInfo(lastCharacter)
-    //  console.log(progressData)
-  } else {
-    lastCharacter = e.key
-    if (ignoreSpace && e.key === ' ') {
-      tracker = tracker
-    } else {
-      tracker = tracker + 1
-    }
-    textContent = textContent + e.key
-    progressInfo(e.key)
-    // console.log(progressData)
-  }
+textEntry.addEventListener('input', (e) => {
+  textContent = ''
+  //  console.log(textContent)
 
+  textContent = e.target.value
+  if (ignoreSpace) {
+    textContent = textContent.replace(/\s/g, '')
+  }
+  //  console.log(textContent)
   if (textContent.length > 0) {
     emptyCharacter.style.display = 'none'
   } else {
@@ -203,7 +169,7 @@ textEntry.addEventListener('keydown', (e) => {
     textContent !== '' &&
     parseInt(characterLimit.value) > 0 &&
     limit.checked &&
-    tracker >= parseInt(characterLimit.value)
+    textContent.length >= parseInt(characterLimit.value)
   ) {
     textEntry.style.border = '1px solid red'
     textEntry.style.boxShadow = '0px 0px 5px 1px red'
@@ -214,13 +180,14 @@ textEntry.addEventListener('keydown', (e) => {
     textEntry.style.boxShadow = '0px 0px 5px 1px #d3a0fa'
     limitWarning.style.display = 'none'
   }
-  characterCountValue.innerText = tracker.toString().padStart(2, 0)
+  characterCountValue.innerText = textContent.length.toString().padStart(2, 0)
   sentenceCountValue.innerText = calculateSentenceCount(textContent)
     .toString()
     .padStart(2, 0)
   wordCountValue.innerText = calculateWordCount(textContent)
     .toString()
     .padStart(2, 0)
+  assignCharacterArray(textContent)
   if (progressData.length <= 5) {
     const slicedData = progressData.slice(0, progressData.length)
     renderProgressData(slicedData)
