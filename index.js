@@ -46,6 +46,7 @@ const assignCharacterArray = (sentence) => {
 //rendering progress bars
 const renderProgressData = (dataArray) => {
   characterContainer.innerHTML = ''
+  const textContentWithoutSpace = textContent.replace(/\s/g, '')
   dataArray.sort((a, b) => b.value - a.value)
   for (let i = 0; i < dataArray.length; i++) {
     if (dataArray[i].character === ' ') {
@@ -59,12 +60,12 @@ const renderProgressData = (dataArray) => {
       ].character.toUpperCase()}</div>
             <div class="progress-inactive">
               <div class="progress-active" style="width: ${(
-                (dataArray[i].value / textContent.length) *
+                (dataArray[i].value / textContentWithoutSpace.length) *
                 100
               ).toFixed(2)}%"></div>
             </div>
             <div class="density-value">${dataArray[i].value} (${(
-        (dataArray[i].value / textContent.length) *
+        (dataArray[i].value / textContentWithoutSpace.length) *
         100
       ).toFixed(2)}%)</div>`
       characterContainer.appendChild(characterProgress)
