@@ -1,4 +1,3 @@
-const { beforeEach } = require('node:test')
 const {
   calculateCharacterCount,
   calculateSentenceCount,
@@ -6,6 +5,7 @@ const {
   estimatedReadingTime,
   updateCounters
 } = require('../character-count')
+const { beforeEach } = require('node:test')
 
 describe('character count functionality', () => {
   test('character count should include spaces', () => {
