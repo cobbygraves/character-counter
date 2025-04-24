@@ -8,7 +8,7 @@ const limitValue = document.querySelector('#limit-value')
 const characterCountValue = document.querySelector('#character-count')
 const sentenceCountValue = document.querySelector('#sentence-count')
 const wordCountValue = document.querySelector('#word-count')
-const readingValue = document.querySelector('.reading-value')
+const readingValue = document.querySelector('.reading-time span')
 const densityContainer = document.querySelector('.density-container')
 const characterContainer = document.querySelector('.character-container')
 const emptyCharacter = document.querySelector('#empty-character')
@@ -45,36 +45,38 @@ const assignCharacterArray = (sentence) => {
 
 //rendering progress bars
 const renderProgressData = (dataArray) => {
-  characterContainer.innerHTML = ''
-  const textContentWithoutSpace = textContent.replace(/\s/g, '')
-  dataArray.sort((a, b) => b.value - a.value)
-  for (let i = 0; i < dataArray.length; i++) {
-    if (dataArray[i].character === ' ') {
-      continue
-    }
-    if (dataArray[i].value > 0) {
-      const characterProgress = document.createElement('div')
-      characterProgress.classList.add('density-progress')
-      characterProgress.innerHTML = `<div class="progress-character">${dataArray[
-        i
-      ].character.toUpperCase()}</div>
-            <div class="progress-inactive">
-              <div class="progress-active" style="width: ${(
-                (dataArray[i].value / textContentWithoutSpace.length) *
-                100
-              ).toFixed(2)}%"></div>
-            </div>
-            <div class="density-value">${dataArray[i].value} (${(
-        (dataArray[i].value / textContentWithoutSpace.length) *
-        100
-      ).toFixed(2)}%)</div>`
-      characterContainer.appendChild(characterProgress)
+  if (characterContainer) {
+    characterContainer.innerHTML = ''
+    const textContentWithoutSpace = textContent.replace(/\s/g, '')
+    dataArray.sort((a, b) => b.value - a.value)
+    for (let i = 0; i < dataArray.length; i++) {
+      if (dataArray[i].character === ' ') {
+        continue
+      }
+      if (dataArray[i].value > 0) {
+        const characterProgress = document.createElement('div')
+        characterProgress.classList.add('density-progress')
+        characterProgress.innerHTML = `<div class="progress-character">${dataArray[
+          i
+        ].character.toUpperCase()}</div>
+              <div class="progress-inactive">
+                <div class="progress-active" style="width: ${(
+                  (dataArray[i].value / textContentWithoutSpace.length) *
+                  100
+                ).toFixed(2)}%"></div>
+              </div>
+              <div class="density-value">${dataArray[i].value} (${(
+          (dataArray[i].value / textContentWithoutSpace.length) *
+          100
+        ).toFixed(2)}%)</div>`
+        characterContainer.appendChild(characterProgress)
+      }
     }
   }
 }
 
 // Switching between light and dark mode
-themeSwitch.addEventListener('click', () => {
+themeSwitch?.addEventListener('click', () => {
   if (!isDark) {
     isDark = !isDark
     characterLimit.style.color = 'black'
@@ -117,81 +119,107 @@ themeSwitch.addEventListener('click', () => {
 })
 
 //textarea focused event handler
-textEntry.addEventListener('focus', () => {
+textEntry?.addEventListener('focus', () => {
   textEntry.style.border = '1px solid #d3a0fa'
   textEntry.style.boxShadow = '0px 0px 5px 1px #d3a0fa'
 })
 
 //textarea blured event handler
-textEntry.addEventListener('blur', () => {
+textEntry?.addEventListener('blur', () => {
   textEntry.style.border = '1px solid #2a2b37'
   textEntry.style.boxShadow = 'none'
 })
 
 //calculate word count
 const calculateWordCount = (sentence) => {
-  const numberOfWords = sentence.trim().split(' ').length
-  if (numberOfWords <= 200) {
-    readingValue.innerText = 1
-  } else if (numberOfWords <= 400) {
-    readingValue.innerText = 2
-  } else {
-    readingValue.innerText = 3
-  }
+  const wordsArray = sentence.split(' ')
+  const filteredWords = wordsArray.filter((word) => word.trim() !== '')
+  return filteredWords.length
+}
 
+//calculate estimated reading time
+const estimatedReadingTime = (sentence) => {
   if (sentence.length === 0) {
-    readingValue.innerText = 0
+    return 0
   }
-  return numberOfWords > 1 ? numberOfWords : 0
+  const numberOfWords = sentence.trim().split(' ').length
+
+  if (numberOfWords <= 200) {
+    return 1
+  } else if (numberOfWords <= 400) {
+    return 2
+  } else {
+    return 3
+  }
 }
 
 //calculate sentence count
 const calculateSentenceCount = (sentence) => {
-  return sentence.split('.').length - 1
+  return sentence.split(/[.!?}]+/).length - 1
 }
 
-//handle textarea change event
-textEntry.addEventListener('input', (e) => {
-  textContent = ''
-  //  console.log(textContent)
+// calculate character count
+const calculateCharacterCount = (sentence, ignoreSpace) => {
+  let textContent = sentence.trim()
 
+  if (ignoreSpace) {
+    textContent = sentence.replace(/\s+/g, '').trim()
+  }
+
+  return textContent.length
+}
+
+//textarea input handler
+const textEntryHandler = (e) => {
+  textContent = ''
   textContent = e.target.value
-  // if (ignoreSpace) {
-  //   textContent = textContent.replace(/\s/g, '')
-  // }
-  //  console.log(textContent)
-  if (textContent.length > 0) {
-    emptyCharacter.style.display = 'none'
-  } else {
-    emptyCharacter.style.display = 'block'
+  if (emptyCharacter) {
+    if (textContent.length > 0) {
+      emptyCharacter.style.display = 'none'
+    } else {
+      emptyCharacter.style.display = 'block'
+    }
+  }
+
+  if (characterLimit && textEntry && limitValue && limitWarning && limit) {
+    if (
+      textContent !== '' &&
+      parseInt(characterLimit.value) > 0 &&
+      limit.checked &&
+      textContent.length >= parseInt(characterLimit?.value)
+    ) {
+      textEntry.style.border = '1px solid red'
+      textEntry.style.boxShadow = '0px 0px 5px 1px red'
+      limitWarning.style.display = 'flex'
+      limitValue.innerHTML = characterLimit.value
+    } else {
+      textEntry.style.border = '1px solid #d3a0fa'
+      textEntry.style.boxShadow = '0px 0px 5px 1px #d3a0fa'
+      limitWarning.style.display = 'none'
+    }
   }
 
   if (
-    textContent !== '' &&
-    parseInt(characterLimit.value) > 0 &&
-    limit.checked &&
-    textContent.length >= parseInt(characterLimit.value)
+    sentenceCountValue &&
+    wordCountValue &&
+    characterCountValue &&
+    readingValue
   ) {
-    textEntry.style.border = '1px solid red'
-    textEntry.style.boxShadow = '0px 0px 5px 1px red'
-    limitWarning.style.display = 'flex'
-    limitValue.innerHTML = characterLimit.value
-  } else {
-    textEntry.style.border = '1px solid #d3a0fa'
-    textEntry.style.boxShadow = '0px 0px 5px 1px #d3a0fa'
-    limitWarning.style.display = 'none'
+    sentenceCountValue.innerText = calculateSentenceCount(textContent)
+      .toString()
+      .padStart(2, 0)
+    wordCountValue.innerText = calculateWordCount(textContent)
+      .toString()
+      .padStart(2, 0)
+    characterCountValue.innerText = calculateCharacterCount(
+      textContent,
+      ignoreSpace
+    )
+      .toString()
+      .padStart(2, 0)
+    readingValue.innerHTML = estimatedReadingTime(textContent)
   }
 
-  sentenceCountValue.innerText = calculateSentenceCount(textContent)
-    .toString()
-    .padStart(2, 0)
-  wordCountValue.innerText = calculateWordCount(textContent)
-    .toString()
-    .padStart(2, 0)
-  if (ignoreSpace) {
-    textContent = textContent.replace(/\s/g, '')
-  }
-  characterCountValue.innerText = textContent.length.toString().padStart(2, 0)
   assignCharacterArray(textContent)
   if (progressData.length <= 5) {
     const slicedData = progressData.slice(0, progressData.length)
@@ -199,15 +227,18 @@ textEntry.addEventListener('input', (e) => {
     showMore.style.display = 'none'
   }
 
-  if (progressData.length > 5) {
+  if (showMore && progressData.length > 5) {
     const slicedData = progressData.slice(0, 5)
     renderProgressData(slicedData)
     showMore.style.display = 'block'
   }
-})
+}
+
+//handle textarea change event
+textEntry?.addEventListener('input', textEntryHandler)
 
 //handle limit error message
-limit.addEventListener('click', () => {
+limit?.addEventListener('click', () => {
   if (limit.checked) {
     characterLimit.style.display = 'block'
   } else {
@@ -216,7 +247,7 @@ limit.addEventListener('click', () => {
 })
 
 //handle spaces event listener
-spaces.addEventListener('click', () => {
+spaces?.addEventListener('click', () => {
   if (spaces.checked) {
     ignoreSpace = true
   } else {
@@ -225,7 +256,7 @@ spaces.addEventListener('click', () => {
 })
 
 //show more handler
-showMore.addEventListener('click', () => {
+showMore?.addEventListener('click', () => {
   if (seeMore.innerHTML === 'See less') {
     seeMore.innerHTML = 'See More'
     seeMoreImg.className = 'rotate'
@@ -241,7 +272,7 @@ showMore.addEventListener('click', () => {
 })
 
 //handle character limit event listener
-characterLimit.addEventListener('input', (e) => {
+characterLimit?.addEventListener('input', (e) => {
   if (limit.checked && textContent.length < parseInt(e.target.value)) {
     textEntry.style.border = '1px solid #d3a0fa'
     textEntry.style.boxShadow = '0px 0px 5px 1px #d3a0fa'
@@ -253,3 +284,11 @@ characterLimit.addEventListener('input', (e) => {
     limitValue.innerHTML = characterLimit.value
   }
 })
+
+module.exports = {
+  textEntryHandler,
+  calculateCharacterCount,
+  calculateSentenceCount,
+  calculateWordCount,
+  estimatedReadingTime
+}
