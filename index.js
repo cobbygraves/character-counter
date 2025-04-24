@@ -169,29 +169,28 @@ const calculateCharacterCount = (sentence, ignoreSpace) => {
   return textContent.length
 }
 
-//textarea input handler
 const textEntryHandler = (e) => {
-  textContent = ''
-  textContent = e.target.value
-  if (emptyCharacter) {
-    if (textContent.length > 0) {
-      emptyCharacter.style.display = 'none'
-    } else {
-      emptyCharacter.style.display = 'block'
-    }
+  const maxCharacters = parseInt(characterLimit?.value) // Default limit if not set
+  let textContent = e.target.value
+
+  // **Prevent typing beyond maxCharacters**
+  if (textContent.length > maxCharacters) {
+    e.target.value = textContent.substring(0, maxCharacters) // Truncate the excess characters
+    textContent = e.target.value
   }
 
+  // **Handle visibility of empty character message**
+  if (emptyCharacter) {
+    emptyCharacter.style.display = textContent.length > 0 ? 'none' : 'block'
+  }
+
+  // **Apply character limit warning**
   if (characterLimit && textEntry && limitValue && limitWarning && limit) {
-    if (
-      textContent !== '' &&
-      parseInt(characterLimit.value) > 0 &&
-      limit.checked &&
-      textContent.length >= parseInt(characterLimit?.value)
-    ) {
+    if (textContent.length >= maxCharacters && limit.checked) {
       textEntry.style.border = '1px solid red'
       textEntry.style.boxShadow = '0px 0px 5px 1px red'
       limitWarning.style.display = 'flex'
-      limitValue.innerHTML = characterLimit.value
+      limitValue.innerHTML = maxCharacters
     } else {
       textEntry.style.border = '1px solid #d3a0fa'
       textEntry.style.boxShadow = '0px 0px 5px 1px #d3a0fa'
@@ -199,6 +198,7 @@ const textEntryHandler = (e) => {
     }
   }
 
+  // **Update counts and reading time**
   if (
     sentenceCountValue &&
     wordCountValue &&
@@ -207,30 +207,27 @@ const textEntryHandler = (e) => {
   ) {
     sentenceCountValue.innerText = calculateSentenceCount(textContent)
       .toString()
-      .padStart(2, 0)
+      .padStart(2, '0')
     wordCountValue.innerText = calculateWordCount(textContent)
       .toString()
-      .padStart(2, 0)
+      .padStart(2, '0')
     characterCountValue.innerText = calculateCharacterCount(
       textContent,
       ignoreSpace
     )
       .toString()
-      .padStart(2, 0)
+      .padStart(2, '0')
     readingValue.innerHTML = estimatedReadingTime(textContent)
   }
 
+  // **Update progress data**
   assignCharacterArray(textContent)
-  if (progressData.length <= 5) {
-    const slicedData = progressData.slice(0, progressData.length)
-    renderProgressData(slicedData)
-    showMore.style.display = 'none'
-  }
+  const slicedData =
+    progressData.length > 5 ? progressData.slice(0, 5) : progressData
+  renderProgressData(slicedData)
 
-  if (showMore && progressData.length > 5) {
-    const slicedData = progressData.slice(0, 5)
-    renderProgressData(slicedData)
-    showMore.style.display = 'block'
+  if (showMore) {
+    showMore.style.display = progressData.length > 5 ? 'block' : 'none'
   }
 }
 
