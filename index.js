@@ -139,7 +139,7 @@ const calculateWordCount = (sentence) => {
 
 //calculate estimated reading time
 const estimatedReadingTime = (sentence) => {
-  if (sentence.length === 0) {
+  if (sentence.trim().length === 0) {
     return 0
   }
   const numberOfWords = sentence.trim().split(' ').length

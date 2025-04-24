@@ -65,4 +65,19 @@ describe('textarea event handling', () => {
     expect(sentenceCount.textContent).toBe('1')
     expect(readingTime.textContent).toBe('1')
   })
+
+  test('should show zero count values for character count', () => {
+    textArea.value = '          '
+    updateCounters(
+      textArea,
+      characterCount,
+      wordCount,
+      sentenceCount,
+      readingTime
+    )
+    expect(characterCount.textContent).toBe('0')
+    expect(wordCount.textContent).toBe('0')
+    expect(sentenceCount.textContent).toBe('0')
+    expect(readingTime.textContent).toBe('0')
+  })
 })
