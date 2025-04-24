@@ -171,7 +171,7 @@ const calculateCharacterCount = (sentence, ignoreSpace) => {
 
 const textEntryHandler = (e) => {
   const maxCharacters = parseInt(characterLimit?.value) // Default limit if not set
-  let textContent = e.target.value
+  textContent = e.target.value
 
   // **Prevent typing beyond maxCharacters**
   if (textContent.length > maxCharacters) {
