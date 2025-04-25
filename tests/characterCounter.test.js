@@ -4,7 +4,7 @@ const {
   calculateWordCount,
   estimatedReadingTime,
   updateCounters
-} = require('../character-count')
+} = require('../index')
 const { beforeEach } = require('node:test')
 
 describe('character count functionality', () => {
@@ -19,6 +19,9 @@ describe('character count functionality', () => {
   })
   test('character count should not count spaces before and after a sentence', () => {
     expect(calculateCharacterCount(' hello ')).toBe(5)
+  })
+  test('character count should count special characters', () => {
+    expect(calculateCharacterCount('Hey!!!, what do you think you are doing?.')).toBe(41)
   })
 })
 
