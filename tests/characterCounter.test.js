@@ -3,7 +3,8 @@ const {
   calculateSentenceCount,
   calculateWordCount,
   estimatedReadingTime,
-  updateCounters
+  updateCounters,
+  handleLimitWarning
 } = require('../index')
 const { beforeEach } = require('node:test')
 
@@ -21,7 +22,9 @@ describe('character count functionality', () => {
     expect(calculateCharacterCount(' hello ')).toBe(5)
   })
   test('character count should count special characters', () => {
-    expect(calculateCharacterCount('Hey!!!, what do you think you are doing?.')).toBe(41)
+    expect(
+      calculateCharacterCount('Hey!!!, what do you think you are doing?.')
+    ).toBe(41)
   })
 })
 
@@ -35,6 +38,7 @@ test('count sentence in a string that ends with puntuation', () => {
   expect(calculateSentenceCount('hello world. Are you the person?')).toBe(2)
 })
 
+//testing estimated reading time
 test('check estimated reading time is less than 2 minutes', () => {
   expect(
     estimatedReadingTime(
@@ -43,6 +47,48 @@ test('check estimated reading time is less than 2 minutes', () => {
   ).toBe(2)
 })
 
+//testing character limit
+test('warning appears when character limit is reached', () => {
+  beforeEach(() => {
+    document.body.innerHTML = ''
+  })
+  document.body.innerHTML = `
+  <textarea
+  name="text-entry"
+  id="text-entry"
+  rows="7"
+  placeholder="Start typing here...(or paste your text)"
+></textarea>
+ <div id="limit-warning">
+  <img src="./assets/images/info-circle.svg" alt="warning" />
+  <p>
+    Limit reached! Your text exceeds
+    <span id="limit-value">0</span> characters.
+  </p>
+    <input type="text" id="character-limit" />
+</div>
+ <input type="checkbox" id="activate-limit" />
+`
+  const textArea = document.querySelector('#text-entry')
+  const limitValue = document.querySelector('#limit-value')
+  const limitWarning = document.querySelector('#limit-warning')
+  const limit = document.querySelector('#activate-limit')
+
+  const textContent = 'calling me'
+  const maxCharacters = 10
+  limit.checked = true
+  handleLimitWarning(
+    textContent,
+    textArea,
+    limitValue,
+    limitWarning,
+    limit,
+    maxCharacters
+  )
+  expect(limitWarning)
+})
+
+//testing text area interactions with the counter
 describe('textarea event handling', () => {
   let textArea, characterCount, wordCount, sentenceCount, readingTime
   beforeEach(() => {
@@ -69,7 +115,7 @@ describe('textarea event handling', () => {
     expect(readingTime.textContent).toBe('1')
   })
 
-  test('should show zero count values for character count', () => {
+  test('should show zero count values for character, word, and sentence count', () => {
     textArea.value = '          '
     updateCounters(
       textArea,

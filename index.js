@@ -76,7 +76,7 @@ const renderProgressData = (dataArray) => {
 }
 
 // Switching between light and dark mode
-themeSwitch.addEventListener('click', () => {
+themeSwitch?.addEventListener('click', () => {
   if (!isDark) {
     isDark = !isDark
     characterLimit.style.color = 'black'
@@ -119,13 +119,13 @@ themeSwitch.addEventListener('click', () => {
 })
 
 //textarea focused event handler
-textEntry.addEventListener('focus', () => {
+textEntry?.addEventListener('focus', () => {
   textEntry.style.border = '1px solid #d3a0fa'
   textEntry.style.boxShadow = '0px 0px 5px 1px #d3a0fa'
 })
 
 //textarea blured event handler
-textEntry.addEventListener('blur', () => {
+textEntry?.addEventListener('blur', () => {
   textEntry.style.border = '1px solid #2a2b37'
   textEntry.style.boxShadow = 'none'
 })
@@ -150,6 +150,27 @@ const estimatedReadingTime = (sentence) => {
     return 2
   } else {
     return 3
+  }
+}
+
+//handle the showing of limit warning
+const handleLimitWarning = (
+  textContent,
+  textEntry,
+  limitValue,
+  limitWarning,
+  limit,
+  maxCharacters
+) => {
+  if (textContent.length == maxCharacters && limit.checked) {
+    textEntry.style.border = '1px solid red'
+    textEntry.style.boxShadow = '0px 0px 5px 1px red'
+    limitWarning.style.display = 'flex'
+    limitValue.innerHTML = maxCharacters
+  } else {
+    textEntry.style.border = '1px solid #d3a0fa'
+    textEntry.style.boxShadow = '0px 0px 5px 1px #d3a0fa'
+    limitWarning.style.display = 'none'
   }
 }
 
@@ -190,18 +211,14 @@ const textEntryHandler = (e) => {
   }
 
   // **Apply character limit warning**
-  if (characterLimit && textEntry && limitValue && limitWarning && limit) {
-    if (textContent.length == maxCharacters && limit.checked) {
-      textEntry.style.border = '1px solid red'
-      textEntry.style.boxShadow = '0px 0px 5px 1px red'
-      limitWarning.style.display = 'flex'
-      limitValue.innerHTML = maxCharacters
-    } else {
-      textEntry.style.border = '1px solid #d3a0fa'
-      textEntry.style.boxShadow = '0px 0px 5px 1px #d3a0fa'
-      limitWarning.style.display = 'none'
-    }
-  }
+  handleLimitWarning(
+    textContent,
+    textEntry,
+    limitValue,
+    limitWarning,
+    limit,
+    maxCharacters
+  )
 
   // **Update counts and reading time**
   if (
@@ -237,22 +254,22 @@ const textEntryHandler = (e) => {
 }
 
 //handle textarea change event
-textEntry.addEventListener('input', textEntryHandler)
+textEntry?.addEventListener('input', textEntryHandler)
 
 //handle limit error message
-limit.addEventListener('click', () => {
+limit?.addEventListener('click', () => {
   if (limit.checked) {
     characterLimit.style.display = 'block'
   } else {
     characterLimit.style.display = 'none'
-    if (parseInt(characterLimit.value) > 0) {
+    if (parseInt(characterLimit?.value) > 0) {
       characterLimit.value = ''
     }
   }
 })
 
 //handle spaces event listener
-spaces.addEventListener('click', () => {
+spaces?.addEventListener('click', () => {
   if (spaces.checked) {
     ignoreSpace = true
   } else {
@@ -261,7 +278,7 @@ spaces.addEventListener('click', () => {
 })
 
 //show more handler
-showMore.addEventListener('click', () => {
+showMore?.addEventListener('click', () => {
   if (seeMore.innerHTML === 'See less') {
     seeMore.innerHTML = 'See More'
     seeMoreImg.className = 'rotate'
@@ -309,5 +326,6 @@ module.exports = {
   calculateSentenceCount,
   calculateWordCount,
   estimatedReadingTime,
-  updateCounters
+  updateCounters,
+  handleLimitWarning
 }
